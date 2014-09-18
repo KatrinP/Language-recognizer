@@ -1,6 +1,5 @@
 import ngrams, pickle, os
 		
-
 #make a propbability list for one language
 #source_file - file with plain text
 def vector_of_language(source_file):

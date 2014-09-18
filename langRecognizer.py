@@ -4,6 +4,7 @@ import ngrams, operator, collections, langVector, sys, argparse
 #TODO: shoda u určení jazyků
 #TODO: váhy! - viz HOW TO IMROVE
 #MAYBE: improve the command line arguments???
+#TODO: vyřešit ten pitomý logaritmus!
 
 
 #count a score for sentence from vector of a language ~ probability for ngrams in the language (suma of logarithms)
@@ -13,6 +14,10 @@ def count_ngram_score(sentence, vector, n):
 	for ngram in ngrams_array:	
 		if ngram in vector[n-1]:
 			score += vector[n-1][ngram]
+			#print("add ", vector[n-1][ngram], "for ", ngram)
+		else:
+			print("not found ", ngram)
+			score += 20 #TODO poladit tuto penalizaci --> nějak implementovat add one smoothing
 	return score
 
 #n = number of kinds of ngrams (uni + bi + trigram = 3)
@@ -21,13 +26,14 @@ def recognize_language(sentence, vectors, n):
 	for i in range(0,n):
 		scores.append({})
 		for language in vectors.keys():
+			print("work with ", language)
 			scores[i][language] = count_ngram_score(sentence, vectors[language], i+1)
-
+	print(scores)
 	#result for uni/bi/trigrams - 0 ~ uni etc.
 	result = []
 	for i in range(0,n):
 		#find the language with largest score for i-gram
-		result.append(max(scores[i].items(), key=operator.itemgetter(1))[0])
+		result.append(min(scores[i].items(), key=operator.itemgetter(1))[0])
 	counted_result = collections.Counter(result)
 	#find the languge which is mostly appeared - dořešit váhy!!!
 	language = max(counted_result.items(), key=operator.itemgetter(1))[0]
