@@ -11,13 +11,16 @@ import ngrams, operator, collections, langVector, sys, argparse
 def count_ngram_score(sentence, vector, n):
 	score = 0
 	ngrams_array = ngrams.make_ngrams(sentence, n)
+	#smoothing - for ngrams which don't appear in vector of language
+	smoothing = max(vector[n-1].items(), key=operator.itemgetter(1))[0]
+
 	for ngram in ngrams_array:	
 		if ngram in vector[n-1]:
 			score += vector[n-1][ngram]
 			#print("add ", vector[n-1][ngram], "for ", ngram)
 		else:
-			print("not found ", ngram)
-			score += 20 #TODO poladit tuto penalizaci --> nějak implementovat add one smoothing
+			#print("not found ", ngram, "add ", smoothing)
+			score += vector[n-1][smoothing] #TODO poladit tuto penalizaci --> nějak implementovat add one smoothing
 	return score
 
 #n = number of kinds of ngrams (uni + bi + trigram = 3)
@@ -26,9 +29,9 @@ def recognize_language(sentence, vectors, n):
 	for i in range(0,n):
 		scores.append({})
 		for language in vectors.keys():
-			print("work with ", language)
+			#print("work with ", language)
 			scores[i][language] = count_ngram_score(sentence, vectors[language], i+1)
-	print(scores)
+	#print(scores)
 	#result for uni/bi/trigrams - 0 ~ uni etc.
 	result = []
 	for i in range(0,n):
