@@ -4,8 +4,6 @@ import ngrams, operator, collections, langVector, sys, argparse
 #TODO: shoda u určení jazyků
 #TODO: váhy! - viz HOW TO IMROVE
 #MAYBE: improve the command line arguments???
-#TODO: vyřešit ten pitomý logaritmus!
-
 
 #count a score for sentence from vector of a language ~ probability for ngrams in the language (suma of logarithms)
 def count_ngram_score(sentence, vector, n):
@@ -19,8 +17,8 @@ def count_ngram_score(sentence, vector, n):
 			score += vector[n-1][ngram]
 			#print("add ", vector[n-1][ngram], "for ", ngram)
 		else:
-			#print("not found ", ngram, "add ", smoothing)
-			score += vector[n-1][smoothing] #TODO poladit tuto penalizaci --> nějak implementovat add one smoothing
+			#print("not found ", ngram, "add ", vector[n-1][smoothing] )
+			score += vector[n-1][smoothing]/1.5 #zde pořešit míru, 1 byla moc přísná 
 	return score
 
 #n = number of kinds of ngrams (uni + bi + trigram = 3)
@@ -31,17 +29,47 @@ def recognize_language(sentence, vectors, n):
 		for language in vectors.keys():
 			#print("work with ", language)
 			scores[i][language] = count_ngram_score(sentence, vectors[language], i+1)
-	#print(scores)
+	print(scores)
 	#result for uni/bi/trigrams - 0 ~ uni etc.
 	result = []
+	#result2 = {}
+	result2 = collections.defaultdict(int)
+
 	for i in range(0,n):
 		#find the language with largest score for i-gram
-		result.append(min(scores[i].items(), key=operator.itemgetter(1))[0])
-	counted_result = collections.Counter(result)
+		#result.append(min(scores[i].items(), key=operator.itemgetter(1))[0])
+		a = min(scores[i].items(), key=operator.itemgetter(1))[0] 
+		result2[a] += (i+1) * 1 #number is the weight
+		print("tomuto přičítám jedničku: ",result2[a], a)
+		result.append(a)
+		#for j in range(0,i):
+		#	result.append(a)
+	print("result2: ",result2)		
+	#counted_result = collections.Counter(result)
 	#find the languge which is mostly appeared - dořešit váhy!!!
-	language = max(counted_result.items(), key=operator.itemgetter(1))[0]
-	probability = counted_result[language] / sum(counted_result.values())
-	return language, probability
+#	language = max(counted_result.items(), key=operator.itemgetter(1))[0]
+	highest = max(result2.values())
+	same_result = []
+	for key, value in result2.items():
+		if value == highest:
+			same_result.append(key)
+	if len(same_result) > 1:
+		out = False
+		for i in range(n, 0, - 1):
+			for language in same_result:
+				if result[i-1] == language:
+					language2 = language
+					print(language)
+					out = True
+					break
+			if out:
+				break
+	else:
+		language2 = same_result[0]#max(result2.items(), key=operator.itemgetter(1))[0]
+	
+	probability = result2[language2] / sum(result2.values())
+#	probability = counted_result[language] / sum(counted_result.values())
+	return language2, probability
 
 
 #parser = argparse.ArgumentParser(description='Recognize language of given sentence (text).')
