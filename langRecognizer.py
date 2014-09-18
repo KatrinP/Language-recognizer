@@ -2,6 +2,8 @@ import ngrams, operator, collections, langVector, sys, argparse
 
 #HOW TO IMPROVE: ask for creating new vector file
 #MAYBE: improve the command line arguments???
+#PROBLEM TO SOLVE: In farsi text appears few times word in latin "ten". Therefore the score for thise word is so high, even higher then in english or czech :(
+
 
 #constants:
 smoothing_rate = 1.5
@@ -21,6 +23,8 @@ def count_ngram_score(sentence, vector, n):
 			score += vector[n-1][ngram]
 			#print("add ", vector[n-1][ngram], "for ", ngram)
 		else:
+			if vector[n-1][smoothing] == 0:
+				print("bacha nula!!!")
 			#print("not found ", ngram, "add ", vector[n-1][smoothing] )
 			score += vector[n-1][smoothing]/smoothing_rate 
 	return score

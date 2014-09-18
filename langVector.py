@@ -1,6 +1,6 @@
-import ngrams, pickle, os
+import ngrams, pickle, os, sys
 		
-#make a propbability list for one language
+#make a propbability list (vector) for one language
 #source_file - file with plain text
 def vector_of_language(source_file):
 	opened_file = open(source_file, encoding="utf-8")
@@ -24,7 +24,7 @@ def load_vector(vector_file):
 			vectors = pickle.load(f)
 	else: vectors = {}
 	if vectors == {}:
-		print("File with language vectors was empty or didn't exist. New empty set of vectors will be created.")
+		user_answer = input("File with language vectors was empty or didn't exist. New empty set of vectors will be created. OK? (Y/n): ")
+		if user_answer.lower() == "n":
+			sys.exit("Work with no vector file is not possible, sorry!")
 	return vectors
-
-

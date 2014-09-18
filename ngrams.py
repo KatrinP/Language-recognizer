@@ -3,10 +3,6 @@ import math
 
 #TODO: probability in one function!
 
-def array_from_file(file_name):
-	train_data = open(file_name, encoding="utf-8")
-	return list(train_data.read())
-
 def make_ngrams(plain_text, n):
 	ngram_array = []
 	array_text = list(plain_text)
@@ -28,7 +24,7 @@ def probability(unigrams):
 	total = sum(unigrams.values()) #co je vlastně total? měl by být počet výskytů ku sumě všech písmenek?
 	unigram_probability = {}
 	for the_unigram in unigrams:
-		unigram_probability[the_unigram] = -math.log(unigrams[the_unigram]/total)
+		unigram_probability[the_unigram] = -math.log(unigrams[the_unigram]/total, 10)
 	return unigram_probability
 
 #probability = count of certain bigram / total count bigrams with the same first letter
@@ -39,9 +35,12 @@ def probability_of_bigram(bigrams):
 		for the_bigram2 in bigrams:
 			if (the_bigram[0] == the_bigram2[0]):
 				sum_of_frequency += bigrams[the_bigram2]
-		bigram_probability[the_bigram] = -math.log(bigrams[the_bigram]/sum_of_frequency)
+		bigram_probability[the_bigram] = -math.log(bigrams[the_bigram]/sum_of_frequency, 10)
 		if bigram_probability[the_bigram] == -0.00:
-			 bigram_probability[the_bigram] = 20 #TODO nastavit nějak rozumně toto číslo
+			del bigram_probability[the_bigram] 
+		#	print(the_bigram, bigrams[the_bigram], sum_of_frequency)
+		#bigram_probability[the_bigram] = 15 #TODO nastavit nějak rozumně toto číslo
+
 	return bigram_probability		
 
 #probability = count of certain trigram / total count of trigrams with the same first two letters
@@ -52,8 +51,7 @@ def probability_of_trigram(trigrams):
 		for the_trigram2 in trigrams:
 			if (the_trigram[0] == the_trigram2[0]) & (the_trigram[1] == the_trigram2[1]):
 				sum_of_frequency += trigrams[the_trigram2]
-		trigram_probability[the_trigram] = -math.log(trigrams[the_trigram]/sum_of_frequency)	
+		trigram_probability[the_trigram] = -math.log(trigrams[the_trigram]/sum_of_frequency, 10)
 		if trigram_probability[the_trigram] == -0.00:
-			 trigram_probability[the_trigram] = 20 #TODO nastavit nějak rozumně toto číslo
-
+			del trigram_probability[the_trigram] 
 	return trigram_probability	
