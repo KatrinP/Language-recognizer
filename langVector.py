@@ -16,6 +16,8 @@ def add_language_vector(language, source_file, vector_file):
 	vectors[language] =  vector_of_language(source_file)
 	with open(vector_file, "wb" ) as f:
 		pickle.dump(vectors, f)
+	print(*("I have learned ",language,"!"), sep="")
+	
 	return
 
 def load_vector(vector_file):

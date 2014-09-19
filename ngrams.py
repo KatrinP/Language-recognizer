@@ -21,7 +21,7 @@ def count_ngrams(plain_text, n):
 #count the probability of unigrams, return logaritmus of probability to avoid small numbers
 #probability = count of found / total count
 def probability(unigrams):
-	total = sum(unigrams.values()) #co je vlastně total? měl by být počet výskytů ku sumě všech písmenek?
+	total = sum(unigrams.values()) 
 	unigram_probability = {}
 	for the_unigram in unigrams:
 		unigram_probability[the_unigram] = -math.log(unigrams[the_unigram]/total, 10)
@@ -37,9 +37,7 @@ def probability_of_bigram(bigrams):
 				sum_of_frequency += bigrams[the_bigram2]
 		bigram_probability[the_bigram] = -math.log(bigrams[the_bigram]/sum_of_frequency, 10)
 		if bigram_probability[the_bigram] == -0.00:
-			del bigram_probability[the_bigram] 
-		#	print(the_bigram, bigrams[the_bigram], sum_of_frequency)
-		#bigram_probability[the_bigram] = 15 #TODO nastavit nějak rozumně toto číslo
+			del bigram_probability[the_bigram] #trash: throw away :)
 
 	return bigram_probability		
 
