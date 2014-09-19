@@ -1,5 +1,5 @@
-import collections
-import math
+#import collections
+import math, sys
 
 #TODO: probability in one function!
 
@@ -13,9 +13,30 @@ def make_ngrams(plain_text, n):
 		ngram_array.append(tuple(ngram))
 	return ngram_array
 
+def counter(ngram_array):
+	def item_get (array, key):
+		if key in array.keys ():
+			return array [key]
+		else:
+			return 0
+	if sys.version_info < (2, 7):
+		# compatibility
+		map = {}
+		if ngram_array is not None:
+			if hasattr (ngram_array, "iteritems"):
+				for elem, count in ngram_array.iteritems():
+					map[elem] = item_get(map,elem) + count
+			else:
+				for elem in ngram_array:
+					map[elem] = item_get(map,elem) + 1
+		return map
+	else:
+		import collections
+		return collections.Counter(ngram_array)
+
 def count_ngrams(plain_text, n):
 	ngram_array = make_ngrams(plain_text, n)
-	ngrams = collections.Counter(ngram_array)
+	ngrams = counter(ngram_array)
 	return ngrams
 
 #count the probability of unigrams, return logaritmus of probability to avoid small numbers
