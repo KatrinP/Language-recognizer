@@ -28,7 +28,8 @@ First try to program something useful in Python. Program should recognize a lang
   - germam
   - finnish
   - swedish
-  - norwegian
+  - norwegian (bokmål)
+  - nynorsk (new norwegian)
   - danish
   - slovak
   - bulgarian
